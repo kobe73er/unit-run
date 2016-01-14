@@ -14,12 +14,6 @@ public class MyTest implements IMyTest {
   private long timeout;
 
 
-
-
-
-
-
-
   public MyTest(Method method, String name, String id, boolean isEnabled, long timeout) {
     super();
     this.method = method;
@@ -28,10 +22,6 @@ public class MyTest implements IMyTest {
     this.isEnabled = isEnabled;
     this.timeout = timeout;
   }
-
-
-
-
 
   public boolean isEnabled() {
     return isEnabled;

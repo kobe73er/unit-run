@@ -1,24 +1,24 @@
 =========================================
-[test failed] [test id:first id][test name:first name]
+[test failed] [test id:testFailedOne id][test name:testFailedOne name]
 java.lang.AssertionError: fail test here
-	at dengpf.dpfUnit.common.Assert.fail(Assert.java:80)
-	at dengpf.dpfUnit.ClientTest.testFailedOne(ClientTest.java:30)
+	at com.dengpf.unitrun.common.Assert.fail(Assert.java:80)
+	at com.dengpf.unitrun.ClientTest.testFailedOne(ClientTest.java:34)
 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.lang.reflect.Method.invoke(Method.java:606)
-	at dengpf.dpfUnit.model.MyTest.invoke(MyTest.java:87)
-	at dengpf.dpfUnit.core.Processor.handler(Processor.java:64)
-	at dengpf.dpfUnit.core.Processor.main(Processor.java:44)
+	at java.lang.reflect.Method.invoke(Method.java:497)
+	at com.dengpf.unitrun.model.MyTest.invoke(MyTest.java:77)
+	at com.dengpf.unitrun.core.Processor.handler(Processor.java:61)
+	at com.dengpf.unitrun.core.Processor.main(Processor.java:39)
 =========================================
 [test failed] [test id:testFailedTwo id][test name:testFailedTwo name]
 java.lang.AssertionError: testFailedTwo
-	at dengpf.dpfUnit.common.Assert.fail(Assert.java:80)
-	at dengpf.dpfUnit.ClientTest.testFailedTwo(ClientTest.java:46)
+	at com.dengpf.unitrun.common.Assert.fail(Assert.java:80)
+	at com.dengpf.unitrun.ClientTest.testFailedTwo(ClientTest.java:68)
 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.lang.reflect.Method.invoke(Method.java:606)
-	at dengpf.dpfUnit.model.MyTest.invoke(MyTest.java:87)
-	at dengpf.dpfUnit.core.Processor.handler(Processor.java:64)
-	at dengpf.dpfUnit.core.Processor.main(Processor.java:44)
+	at java.lang.reflect.Method.invoke(Method.java:497)
+	at com.dengpf.unitrun.model.MyTest.invoke(MyTest.java:77)
+	at com.dengpf.unitrun.core.Processor.handler(Processor.java:61)
+	at com.dengpf.unitrun.core.Processor.main(Processor.java:39)

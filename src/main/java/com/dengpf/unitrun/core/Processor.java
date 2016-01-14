@@ -3,9 +3,6 @@
  */
 package com.dengpf.unitrun.core;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.PrintStream;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,81 +10,74 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.dengpf.unitrun.ClientTest;
 import com.dengpf.unitrun.annotation.Test;
 import com.dengpf.unitrun.model.FailedTest;
 import com.dengpf.unitrun.model.MyTest;
+import com.dengpf.unitrun.model.listener.IRunListener;
+import com.dengpf.unitrun.model.listener.TestRunListener;
 import com.dengpf.unitrun.utils.ReflectionUtils;
-import com.dpf.unitrun.ClientTest;
 
 /**
  * @author kobe73er
  *
  */
 public class Processor {
-  // 定义一个全局的记录器，通过LoggerFactory获取
   private final static Logger LOGGER = LoggerFactory.getLogger(Processor.class);
 
+  private List<FailedTest> failedTestList = new ArrayList<FailedTest>();
+  private List<MyTest> normalTestList = new ArrayList<MyTest>();
 
-  List<FailedTest> failedTestList = new ArrayList<FailedTest>();
-  List<MyTest> normalTestList = new ArrayList<MyTest>();
+  private List<IRunListener> listenerList = new ArrayList<IRunListener>();
 
-  PrintStream ps;
 
-  /**
-   * @param args
-   */
   public static void main(String[] args) {
     Processor p = new Processor();
     p.handler(ClientTest.class);
   }
 
   private void handler(Class<?> clazz) {
+    registerListneners(new TestRunListener());
     Method[] methods = clazz.getDeclaredMethods();
     for (Method item : methods) {
       if (!item.isAnnotationPresent(Test.class)) {
         continue;
       }
       MyTest mytestItem = wrapMethodToMyTest(item);
-      normalTestList.add(mytestItem);
       if (!validateTestMethod(mytestItem)) {
         continue;
       }
       if (!filterDisabledMethod(mytestItem)) {
         continue;
       }
-
-      if (mytestItem.isAnnotationPresent(Test.class)) {
-        try {
-          mytestItem.invoke(clazz.newInstance());
-        } catch (Exception ex) {
-          FailedTest failedTest = wrapToFailedTest(mytestItem, ex);
-          recordFailedTest(failedTest);
-          LOGGER.error("[test failed] [test id:" + failedTest.getId() + "]" + "[test name:"
-              + failedTest.getName() + "]", failedTest.getEx());
-        }
-      }
-    }
-  }
-
-  private void recordFailedTest(FailedTest failedTest) {
-    failedTestList.add(failedTest);
-    PrintStream pstream = getPrintStream();
-    pstream.append("=========================================\n");
-    pstream.append("[test failed] [test id:" + failedTest.getId() + "]" + "[test name:"
-        + failedTest.getName() + "]\n");
-    failedTest.getEx().getCause().printStackTrace(pstream);
-  }
-
-  private PrintStream getPrintStream() {
-    if (null == ps) {
+      recordTest(mytestItem);
       try {
-        ps = new PrintStream(new FileOutputStream("FailedTest.txt"));
-      } catch (FileNotFoundException e) {
-        LOGGER.error("failed to find file ", e);
+        for (IRunListener runItem : listenerList) {
+          runItem.runStart(mytestItem);
+        }
+        mytestItem.invoke(clazz.newInstance());
+        for (IRunListener runItem : listenerList) {
+          runItem.runFinish(mytestItem);
+        }
+      } catch (Exception ex) {
+        for (IRunListener runItem : listenerList) {
+          runItem.runAbort(mytestItem, ex);
+        }
+        addToFailedTestList(new FailedTest(mytestItem, ex));
       }
     }
-    return ps;
+  }
 
+  public void registerListneners(IRunListener listener) {
+    listenerList.add(listener);
+  }
+
+  private void recordTest(MyTest mytestItem) {
+    normalTestList.add(mytestItem);
+  }
+
+  private void addToFailedTestList(FailedTest failedTest) {
+    failedTestList.add(failedTest);
   }
 
   private boolean filterDisabledMethod(MyTest mytestItem) {
@@ -100,11 +90,6 @@ public class Processor {
 
   private boolean checkEnabled(MyTest mytestItem) {
     return mytestItem.isEnabled();
-  }
-
-  private FailedTest wrapToFailedTest(MyTest mytestItem, Exception ex) {
-    return new FailedTest(mytestItem, ex);
-
   }
 
   private MyTest wrapMethodToMyTest(Method method) {

@@ -1,11 +1,13 @@
 package com.dengpf.unitrun.model;
 
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 import com.dengpf.unitrun.annotation.Test;
 
 
 public interface IMyTest {
+
 
   boolean isAnnotationPresent(Class<Test> class1);
 

@@ -21,34 +21,68 @@ public class ClientTest {
 
   @Test
   public void testOne() {
-    System.out.println("testOne is here");
     Assert.assertEquals(1, 1);
+    try {
+      Thread.sleep(1000);
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    }
   }
 
-  @Test(name = "first name", id = "first id", enabled = true)
+  @Test(name = "testFailedOne name", id = "testFailedOne id", enabled = true)
   public void testFailedOne() {
     Assert.fail("fail test here");
+    try {
+      Thread.sleep(300);
+    } catch (InterruptedException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
   }
 
-  @Test
+  @Test(name = "testSucTwo name", id = "testSucTwo id")
   public void testSucTwo() {
-    System.out.println("testSucTwo is here");
     Assert.assertEquals(1, 1);
+    try {
+      Thread.sleep(300);
+    } catch (InterruptedException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+
   }
 
   @Test(name = "testDiabled name", id = "testDiabled id", enabled = false)
   public void testDiabled() {
     Assert.debug("testDiabled here");
+    try {
+      Thread.sleep(300);
+    } catch (InterruptedException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
   }
 
   @Test(name = "testFailedTwo name", id = "testFailedTwo id", enabled = true)
   public void testFailedTwo() {
     Assert.fail("testFailedTwo");
+    try {
+      Thread.sleep(300);
+    } catch (InterruptedException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
   }
 
   @Test(name = "privateTest name", id = "privateTest id", enabled = true)
   private void privateTest() {
     Assert.debug("privateTest here");
+    try {
+      Thread.sleep(300);
+    } catch (InterruptedException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
   }
 
 }
