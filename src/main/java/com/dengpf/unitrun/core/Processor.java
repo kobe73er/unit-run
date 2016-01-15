@@ -50,14 +50,36 @@ public class Processor {
 
   private List<FAfterClass> afterClassMethodList = new ArrayList<FAfterClass>();
 
+  private List<Class<?>> testClazzList = new ArrayList<Class<?>>();
+
 
   public static void main(String[] args) {
     Processor p = new Processor();
+    p.init();
     p.handler(ClientTest.class);
   }
 
 
-  private void handler(Class<ClientTest> clazz) {
+  private void handler(Class<ClientTest> class1) {
+    init();
+
+  }
+
+
+  public void registerListener(IRunListener listener) {
+    listenerList.add(listener);
+  }
+
+  private void init() {
+    registerListener(new TestRunListener());
+  }
+
+  private void registerTestClass(Class [] clazzArr) {
+    
+  }
+
+
+  private void preHandler(Class<ClientTest> clazz) {
     Method[] methods = clazz.getDeclaredMethods();
     for (Method method : methods) {
       if (method.isAnnotationPresent(Test.class)) {
