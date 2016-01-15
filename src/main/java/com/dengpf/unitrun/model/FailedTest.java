@@ -1,24 +1,15 @@
 package com.dengpf.unitrun.model;
 
+import java.lang.reflect.Method;
 
+public class FailedTest extends FTest {
 
-public class FailedTest extends MyTest {
-
-  public FailedTest(MyTest mytestItem, Exception ex2) {
-    super(mytestItem.getMethod(), mytestItem.getName(), mytestItem.getId(), mytestItem.isEnabled(),
-        mytestItem.getTimeout());
-    this.ex = ex2;
+  public FailedTest(Method methodItem) {
+    super(methodItem);
   }
 
-  private Throwable ex;
-
-  public Throwable getEx() {
-    return ex;
+  public FailedTest(FTest methodItem, Exception ex) {
+    super(methodItem.getMethod());
+    this.throwAble = ex;
   }
-
-  public void setEx(Throwable ex) {
-    this.ex = ex;
-  }
-
-
 }

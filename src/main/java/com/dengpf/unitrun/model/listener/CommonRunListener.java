@@ -7,9 +7,9 @@ import java.io.PrintStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.dengpf.unitrun.model.FTest;
 import com.dengpf.unitrun.model.FailedTest;
 import com.dengpf.unitrun.model.IMyTest;
-import com.dengpf.unitrun.model.MyTest;
 
 public class CommonRunListener implements IRunListener {
   long startTime;
@@ -28,18 +28,18 @@ public class CommonRunListener implements IRunListener {
   public void runFinish(IMyTest mytestItem) {
     endTime = System.currentTimeMillis();
     executionTime = endTime - startTime;
-    MyTest test = (MyTest) mytestItem;
+    FTest test = (FTest) mytestItem;
     System.out.println("[test Id:" + test.getId() + "]" + "[test name:" + test.getName() + "]"
         + " execution time:" + executionTime + " ms");
 
   }
 
-  public void runAbort(MyTest mytestItem, Exception ex) {
+  public void runAbort(FTest mytestItem, Exception ex) {
     FailedTest failedTest = wrapToFailedTest(mytestItem, ex);
     recordFailedTest(failedTest);
   }
 
-  private FailedTest wrapToFailedTest(MyTest mytestItem, Exception ex) {
+  private FailedTest wrapToFailedTest(FTest mytestItem, Exception ex) {
     return new FailedTest(mytestItem, ex);
   }
 
@@ -50,7 +50,7 @@ public class CommonRunListener implements IRunListener {
     pstream.append("=========================================\n");
     pstream.append("[test failed] [test id:" + failedTest.getId() + "]" + "[test name:"
         + failedTest.getName() + "]\n");
-    failedTest.getEx().getCause().printStackTrace(pstream);
+    failedTest.getThrowAble().getCause().printStackTrace(pstream);
 
   }
 

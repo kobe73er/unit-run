@@ -8,4 +8,10 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface BeforeEachMethod {
+
+  int order() default 0;
+
+  boolean enabled() default true;
+
+
 }

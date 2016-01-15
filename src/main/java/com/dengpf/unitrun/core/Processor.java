@@ -5,15 +5,27 @@ package com.dengpf.unitrun.core;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.dengpf.unitrun.ClientTest;
+import com.dengpf.unitrun.annotation.AfterClass;
+import com.dengpf.unitrun.annotation.AfterEachMethod;
+import com.dengpf.unitrun.annotation.BeforeClass;
+import com.dengpf.unitrun.annotation.BeforeEachMethod;
 import com.dengpf.unitrun.annotation.Test;
+import com.dengpf.unitrun.model.FAfterClass;
+import com.dengpf.unitrun.model.FAfterEachMethod;
+import com.dengpf.unitrun.model.FBeforeClass;
+import com.dengpf.unitrun.model.FBeforeEachMethod;
+import com.dengpf.unitrun.model.FTest;
 import com.dengpf.unitrun.model.FailedTest;
-import com.dengpf.unitrun.model.MyTest;
+import com.dengpf.unitrun.model.FrameworkMember;
+import com.dengpf.unitrun.model.FrameworkMethod;
+import com.dengpf.unitrun.model.comparator.OrderComparator;
 import com.dengpf.unitrun.model.listener.IRunListener;
 import com.dengpf.unitrun.model.listener.TestRunListener;
 import com.dengpf.unitrun.utils.ReflectionUtils;
@@ -26,9 +38,17 @@ public class Processor {
   private final static Logger LOGGER = LoggerFactory.getLogger(Processor.class);
 
   private List<FailedTest> failedTestList = new ArrayList<FailedTest>();
-  private List<MyTest> normalTestList = new ArrayList<MyTest>();
+  private List<FTest> testList = new ArrayList<FTest>();
 
   private List<IRunListener> listenerList = new ArrayList<IRunListener>();
+
+  private List<FBeforeEachMethod> beforeEachMethodList = new ArrayList<FBeforeEachMethod>();
+
+  private List<FAfterEachMethod> afterEachMethodList = new ArrayList<FAfterEachMethod>();
+
+  private List<FBeforeClass> beforeClassMethodList = new ArrayList<FBeforeClass>();
+
+  private List<FAfterClass> afterClassMethodList = new ArrayList<FAfterClass>();
 
 
   public static void main(String[] args) {
@@ -36,70 +56,105 @@ public class Processor {
     p.handler(ClientTest.class);
   }
 
-  private void handler(Class<?> clazz) {
-    registerListneners(new TestRunListener());
+
+  private void handler(Class<ClientTest> clazz) {
     Method[] methods = clazz.getDeclaredMethods();
-    for (Method item : methods) {
-      if (!item.isAnnotationPresent(Test.class)) {
-        continue;
+    for (Method method : methods) {
+      if (method.isAnnotationPresent(Test.class)) {
+        FTest fTest = wrapIntoFrameworkTest(method);
+        testMethodFilter(fTest);
+        testList.add(fTest);
       }
-      MyTest mytestItem = wrapMethodToMyTest(item);
-      if (!validateTestMethod(mytestItem)) {
-        continue;
+      if (method.isAnnotationPresent(BeforeEachMethod.class)) {
+        FBeforeEachMethod fBeoreEachMethod = wrapIntoFrameworkBeforeEachMethod(method);
+        beforeEachMethodFilter(fBeoreEachMethod);
+        beforeEachMethodList.add(fBeoreEachMethod);
       }
-      if (!filterDisabledMethod(mytestItem)) {
-        continue;
+
+      if (method.isAnnotationPresent(AfterEachMethod.class)) {
+        FAfterEachMethod fAfterEachMethod = wrapIntoFrameWorkAfterEachMethod(method);
+        afterEachmethodFilter(fAfterEachMethod);
+        afterEachMethodList.add(fAfterEachMethod);
       }
-      recordTest(mytestItem);
-      try {
-        for (IRunListener runItem : listenerList) {
-          runItem.runStart(mytestItem);
-        }
-        mytestItem.invoke(clazz.newInstance());
-        for (IRunListener runItem : listenerList) {
-          runItem.runFinish(mytestItem);
-        }
-      } catch (Exception ex) {
-        for (IRunListener runItem : listenerList) {
-          runItem.runAbort(mytestItem, ex);
-        }
-        addToFailedTestList(new FailedTest(mytestItem, ex));
+
+      if (method.isAnnotationPresent(BeforeClass.class)) {
+        FBeforeClass fBeforeClass = wrapIntoFrameworkBeforeClassMethod(method);
+        beforeClassMethodFilter(method);
+        beforeClassMethodList.add(fBeforeClass);
       }
+      if (method.isAnnotationPresent(AfterClass.class)) {
+        FAfterClass fAfterClass = wrapIntoFrameworkAfterClassMethod(method);
+        afterClassMethodFilter(method);
+        afterClassMethodList.add(fAfterClass);
+      }
+
     }
+
+
+
   }
 
-  public void registerListneners(IRunListener listener) {
-    listenerList.add(listener);
+
+  private void afterClassMethodFilter(Method method) {
+    // TODO Auto-generated method stub
+
   }
 
-  private void recordTest(MyTest mytestItem) {
-    normalTestList.add(mytestItem);
+
+  private FAfterClass wrapIntoFrameworkAfterClassMethod(Method method) {
+    // TODO Auto-generated method stub
+    return null;
   }
 
-  private void addToFailedTestList(FailedTest failedTest) {
-    failedTestList.add(failedTest);
+
+  private void beforeClassMethodFilter(Method method) {
+    // TODO Auto-generated method stub
+
   }
 
-  private boolean filterDisabledMethod(MyTest mytestItem) {
-    return checkEnabled(mytestItem);
+
+  private FBeforeClass wrapIntoFrameworkBeforeClassMethod(Method method) {
+    // TODO Auto-generated method stub
+    return null;
   }
 
-  private boolean validateTestMethod(MyTest mytestItem) {
-    return (ReflectionUtils.isPublic(mytestItem.getMethod()));
+
+  private void afterEachmethodFilter(FAfterEachMethod fAfterEachMethod) {
+    // TODO Auto-generated method stub
+
   }
 
-  private boolean checkEnabled(MyTest mytestItem) {
-    return mytestItem.isEnabled();
+
+  private FAfterEachMethod wrapIntoFrameWorkAfterEachMethod(Method method) {
+    // TODO Auto-generated method stub
+    return null;
   }
 
-  private MyTest wrapMethodToMyTest(Method method) {
-    Test test = method.getAnnotation(Test.class);
-    String id = test.id();
-    String name = test.name();
-    long timeout = test.timeout();
-    boolean enabled = test.enabled();
 
-    return new MyTest(method, name, id, enabled, timeout);
+  private void beforeEachMethodFilter(FBeforeEachMethod fBeoreEachMethod) {
+    // TODO Auto-generated method stub
+
   }
+
+
+  private FBeforeEachMethod wrapIntoFrameworkBeforeEachMethod(Method method) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+
+  private void testMethodFilter(FTest fMethod) {
+    ReflectionUtils.isPublic(fMethod.getMethod());
+
+  }
+
+
+  private FTest wrapIntoFrameworkTest(Method methodItem) {
+    // TODO Auto-generated method stub
+    return new FTest(methodItem);
+
+  }
+
+
 
 }

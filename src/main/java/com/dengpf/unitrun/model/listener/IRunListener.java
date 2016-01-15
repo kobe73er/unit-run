@@ -3,8 +3,8 @@
  */
 package com.dengpf.unitrun.model.listener;
 
+import com.dengpf.unitrun.model.FTest;
 import com.dengpf.unitrun.model.IMyTest;
-import com.dengpf.unitrun.model.MyTest;
 
 /**
  * @author kobe73er
@@ -15,5 +15,5 @@ public interface IRunListener {
 
   public abstract void runFinish(IMyTest mytestItem);
 
-  public abstract void runAbort(MyTest mytestItem, Exception ex);
+  public abstract void runAbort(FTest mytestItem, Exception ex);
 }

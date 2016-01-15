@@ -6,24 +6,26 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.METHOD })
+@Target({ElementType.METHOD})
 public @interface Test {
 
-    static class None extends Throwable {
-        private static final long serialVersionUID = 1L;
+  static class None extends Throwable {
+    private static final long serialVersionUID = 1L;
 
-        private None() {
-        }
-    }
+    private None() {}
+  }
 
 
-    Class<? extends Throwable> expected() default None.class;
+  Class<? extends Throwable> expected() default None.class;
 
   long timeout() default 0L;
 
   boolean enabled() default true;
-  
+
   String id() default "";
-  
+
   String name() default "";
+
+  int order() default 0;
+  
 }
